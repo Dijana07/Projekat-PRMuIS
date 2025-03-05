@@ -5,8 +5,8 @@ namespace Client.Crypto
 {
     public class AES
     {
-        private string key;
-        private string iv;
+        private static string key;
+        private static string iv;
 
         public AES(string k, string i)
         {
@@ -14,7 +14,7 @@ namespace Client.Crypto
             iv = i;
         }
 
-        public static string Encrypt(string plainText)
+        public string Encrypt(string plainText)
         {
             using (Aes aesAlg = Aes.Create())
             {
@@ -37,7 +37,7 @@ namespace Client.Crypto
             }
         }
 
-        public static string Decrypt(string cipherText)
+        public string Decrypt(string cipherText)
         {
             using (Aes aesAlg = Aes.Create())
             {

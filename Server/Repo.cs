@@ -1,4 +1,4 @@
-﻿using Client.Pomocne_metode;
+﻿using Server.Pomocne_metode;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

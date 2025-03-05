@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Security.Cryptography;
 using Client.Pomocne_metode;
+using Client.Crypto;
 
 namespace Client
 {
@@ -58,12 +59,6 @@ namespace Client
                 return;
             }
 
-            /*
-            Hesiranje hes = new Hesiranje();
-            string proba = "dijana";
-            Console.WriteLine(hes.Hesiraj(proba));
-            */
-
             string key;
             string iv;
             if (algoritam?.ToLower() == "des")
@@ -100,10 +95,24 @@ namespace Client
                     {
                         Console.WriteLine("Unesite poruku:");
                         string poruka = Console.ReadLine();
-                        byte[] binarnaPoruka = Encoding.UTF8.GetBytes(poruka);
+                        
+                        // sifruje se poruka pa se salje
+                        string sifrovanaPoruka = "";
+                        if (algoritam.ToLower() == "des")
+                        {
+                            Crypto.DES des = new Crypto.DES(key, iv);
+                            sifrovanaPoruka = des.Encrypt(poruka);
+                            Console.WriteLine("Sifrovana poruka: " + sifrovanaPoruka);
+                        }
+                        else if (algoritam.ToLower() == "aes")
+                        {
+                            Crypto.AES aes = new Crypto.AES(key, iv);
+                            //sifrovanaPoruka = aes.En
+                        }
+
+                        byte[] binarnaPoruka = Encoding.UTF8.GetBytes(sifrovanaPoruka);
                         int brBajta = clientSocket.SendTo(binarnaPoruka, 0, binarnaPoruka.Length, SocketFlags.None, destEP); // Poruka koju saljemo u binarnom zapisu, pocetak poruke, duzina, flegovi, odrediste
 
-                        Console.WriteLine($"Uspesno poslato {brBajta} ka {destEP}");
                         if (poruka == "kraj")
                             break;
 

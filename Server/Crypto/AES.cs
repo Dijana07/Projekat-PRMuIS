@@ -5,8 +5,8 @@ namespace Server.Crypto
 {
     public class AES
     {
-        private string key;
-        private string iv;
+        private static string key;
+        private static string iv;
 
         public AES(string k, string i)
         {

@@ -5,8 +5,8 @@ namespace Server.Crypto
 {
     public class DES
     {
-        private string key;
-        private string iv;
+        private static string key;
+        private static string iv;
 
         public DES(string k, string i)
         {

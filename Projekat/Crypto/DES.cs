@@ -5,8 +5,8 @@ namespace Client.Crypto
 {
     public class DES
     {
-        private string key;
-        private string iv;
+        private static string key;
+        private static string iv;
 
         public DES(string k, string i)
         {
@@ -14,7 +14,7 @@ namespace Client.Crypto
             iv = i;
         }
 
-        public static byte[] Encrypt(string plainText)
+        public string Encrypt(string plainText)
         {
             using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
             {
@@ -30,18 +30,20 @@ namespace Client.Crypto
                         byte[] inputBytes = Encoding.UTF8.GetBytes(plainText);
                         cs.Write(inputBytes, 0, inputBytes.Length);
                         cs.FlushFinalBlock();
-                        return ms.ToArray();
                     }
+                    byte[] encryptedData = ms.ToArray();
+                    string encryptedTextBase64 = Convert.ToBase64String(encryptedData);
+                    return encryptedTextBase64;
                 }
             }
         }
 
-        public static string Decrypt(byte[] cipherText, byte[] key, byte[] iv)
+        public string Decrypt(byte[] cipherText)
         {
             using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
             {
-                des.Key = key;
-                des.IV = iv;
+                des.Key = Encoding.UTF8.GetBytes(key);
+                des.IV = Encoding.UTF8.GetBytes(iv);
                 des.Mode = CipherMode.CBC;
                 des.Padding = PaddingMode.PKCS7;
 
