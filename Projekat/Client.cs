@@ -10,10 +10,6 @@ using System.Net.WebSockets;
 using System.Security.Cryptography;
 using Client.Pomocne_metode;
 
-
-// TODO ne radi gasenje kad se ukuca kraj, ni kod servera ni kod klijenta, kod TCP protokola, kod UDP radi
-
-
 namespace Client
 {
     public class Client
@@ -169,7 +165,7 @@ namespace Client
                             break;
                         }
 
-                        string odgovor = Encoding.UTF8.GetString(buffer); 
+                        string odgovor = Encoding.UTF8.GetString(buffer, 0, brBajta); 
                         if (odgovor == "kraj")
                             break;
                         Console.WriteLine(odgovor);
