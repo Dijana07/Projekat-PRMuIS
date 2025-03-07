@@ -237,9 +237,17 @@ namespace Server
                                                 sifrovaniOdgovor = aes.Encrypt(odgovor);
                                             }
 
-                                            brBajta = s.SendTo(Encoding.UTF8.GetBytes(sifrovaniOdgovor), posiljaocEP);
+                                            brBajta = s.SendTo(Encoding.UTF8.GetBytes(sifrovaniOdgovor), komunikacija.UticnicaAdresaKlijenta);
                                             if (odgovor == "kraj")
+                                            {
+                                                komunikacijaLista.Remove(komunikacija);
+                                                if (komunikacijaLista.Count == 0)
+                                                {
+                                                    Console.WriteLine("Svi klijenti su zavrsili sa radom");
+                                                    break;
+                                                }
                                                 break;
+                                            }
                                         }
                                     }
                                 }
