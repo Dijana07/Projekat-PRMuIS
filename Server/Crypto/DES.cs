@@ -14,7 +14,7 @@ namespace Server.Crypto
             iv = i;
         }
 
-        public static byte[] Encrypt(string plainText)
+        public string Encrypt(string plainText)
         {
             using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
             {
@@ -30,18 +30,27 @@ namespace Server.Crypto
                         byte[] inputBytes = Encoding.UTF8.GetBytes(plainText);
                         cs.Write(inputBytes, 0, inputBytes.Length);
                         cs.FlushFinalBlock();
-                        return ms.ToArray();
                     }
+                    byte[] encryptedData = ms.ToArray();
+                    string encryptedTextBase64 = Convert.ToBase64String(encryptedData);
+                    return encryptedTextBase64;
                 }
             }
         }
 
-        public static string Decrypt(byte[] cipherText, byte[] key, byte[] iv)
+        public string Decrypt(string cipherTextBase64)
         {
+            byte[] cipherText = Convert.FromBase64String(cipherTextBase64);
+
+            if (cipherText.Length % 8 != 0)
+            {
+                throw new CryptographicException("Cifrovani podaci nisu u pravilnom formatu.");
+            }
+
             using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
             {
-                des.Key = key;
-                des.IV = iv;
+                des.Key = Encoding.UTF8.GetBytes(key);
+                des.IV = Encoding.UTF8.GetBytes(iv);
                 des.Mode = CipherMode.CBC;
                 des.Padding = PaddingMode.PKCS7;
 
@@ -51,7 +60,7 @@ namespace Server.Crypto
                     {
                         cs.Write(cipherText, 0, cipherText.Length);
                         cs.FlushFinalBlock();
-                        return Encoding.UTF8.GetString(ms.ToArray()); // Pretvara dešifrovani bajt niz u string
+                        return Encoding.UTF8.GetString(ms.ToArray());
                     }
                 }
             }

@@ -38,8 +38,10 @@ namespace Client.Crypto
             }
         }
 
-        public string Decrypt(byte[] cipherText)
+        public string Decrypt(string cipherTextBase64)
         {
+            byte[] cipherText = Convert.FromBase64String(cipherTextBase64);
+
             using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
             {
                 des.Key = Encoding.UTF8.GetBytes(key);
@@ -53,7 +55,7 @@ namespace Client.Crypto
                     {
                         cs.Write(cipherText, 0, cipherText.Length);
                         cs.FlushFinalBlock();
-                        return Encoding.UTF8.GetString(ms.ToArray()); // Pretvara dešifrovani bajt niz u string
+                        return Encoding.UTF8.GetString(ms.ToArray());
                     }
                 }
             }

@@ -14,7 +14,7 @@ namespace Server.Crypto
             iv = i;
         }
 
-        public static string Encrypt(string plainText)
+        public string Encrypt(string plainText)
         {
             using (Aes aesAlg = Aes.Create())
             {
@@ -37,7 +37,7 @@ namespace Server.Crypto
             }
         }
 
-        public static string Decrypt(string cipherText)
+        public string Decrypt(string cipherText)
         {
             using (Aes aesAlg = Aes.Create())
             {

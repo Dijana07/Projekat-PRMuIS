@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 
 namespace Server
 {
@@ -16,7 +11,7 @@ namespace Server
 
         public string Dodatno { get; set; }
 
-        public NacinKomunikacije (EndPoint uticnicaAdresaKlijenta, string algoritam, string kljuc, string dodatno = "")
+        public NacinKomunikacije(EndPoint uticnicaAdresaKlijenta, string algoritam, string kljuc, string dodatno = "")
         {
             UticnicaAdresaKlijenta = uticnicaAdresaKlijenta;
             Algoritam = algoritam;

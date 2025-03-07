@@ -1,10 +1,4 @@
 ﻿using Server.Pomocne_metode;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Server
 {
@@ -19,7 +13,7 @@ namespace Server
             data.Add(hesiranje.Hesiraj("des"), "des");
             data.Add(hesiranje.Hesiraj("aes"), "aes");
         }
-        
+
         public string PronadjiAlgoritam(string hesirano)
         {
             return data.GetValueOrDefault(hesirano);

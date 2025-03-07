@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+﻿using Client.Pomocne_metode;
 using System.Net;
 using System.Net.Sockets;
-using System.Net.WebSockets;
-using System.Security.Cryptography;
-using Client.Pomocne_metode;
-using Client.Crypto;
+using System.Text;
 
 namespace Client
 {
@@ -65,7 +57,7 @@ namespace Client
             {
                 key = "12345678";
                 iv = "87654321";
-            } 
+            }
             else
             {
                 key = "1234567890abcdef";
@@ -95,20 +87,21 @@ namespace Client
                     {
                         Console.WriteLine("Unesite poruku:");
                         string poruka = Console.ReadLine();
-                        
+
                         // sifruje se poruka pa se salje
                         string sifrovanaPoruka = "";
                         if (algoritam.ToLower() == "des")
                         {
                             Crypto.DES des = new Crypto.DES(key, iv);
                             sifrovanaPoruka = des.Encrypt(poruka);
-                            Console.WriteLine("Sifrovana poruka: " + sifrovanaPoruka);
+
                         }
                         else if (algoritam.ToLower() == "aes")
                         {
                             Crypto.AES aes = new Crypto.AES(key, iv);
-                            //sifrovanaPoruka = aes.En
+                            sifrovanaPoruka = aes.Encrypt(poruka);
                         }
+                        Console.WriteLine("Sifrovana poruka: " + sifrovanaPoruka);
 
                         byte[] binarnaPoruka = Encoding.UTF8.GetBytes(sifrovanaPoruka);
                         int brBajta = clientSocket.SendTo(binarnaPoruka, 0, binarnaPoruka.Length, SocketFlags.None, destEP); // Poruka koju saljemo u binarnom zapisu, pocetak poruke, duzina, flegovi, odrediste
@@ -126,9 +119,23 @@ namespace Client
                         }
 
                         string odgovor = Encoding.UTF8.GetString(buffer, 0, brBajta);
-                        if (odgovor == "kraj")
+                        string desifrovaniOdgovor = "";
+                        if (algoritam.ToLower() == "des")
+                        {
+                            Crypto.DES des = new Crypto.DES(key, iv);
+                            desifrovaniOdgovor = des.Decrypt(odgovor);
+                        }
+                        else
+                        {
+                            Crypto.AES aes = new Crypto.AES(key, iv);
+                            desifrovaniOdgovor = aes.Decrypt(odgovor);
+                        }
+
+                        Console.WriteLine("Primljeni (sifrovani) odgovor: " + odgovor);
+                        Console.WriteLine("Desifrovani odgovor: " + desifrovaniOdgovor);
+
+                        if (desifrovaniOdgovor == "kraj")
                             break;
-                        Console.WriteLine(odgovor);
                     }
 
                 }
@@ -161,7 +168,22 @@ namespace Client
                     try
                     {
                         string poruka = Console.ReadLine();
-                        int brBajta = clientSocket.Send(Encoding.UTF8.GetBytes(poruka));
+                        string sifrovanaPoruka = "";
+
+                        if (algoritam.ToLower() == "des")
+                        {
+                            Crypto.DES des = new Crypto.DES(key, iv);
+                            sifrovanaPoruka = des.Encrypt(poruka);
+
+                        }
+                        else if (algoritam.ToLower() == "aes")
+                        {
+                            Crypto.AES aes = new Crypto.AES(key, iv);
+                            sifrovanaPoruka = aes.Encrypt(poruka);
+                        }
+                        Console.WriteLine("Sifrovana poruka: " + sifrovanaPoruka);
+
+                        int brBajta = clientSocket.Send(Encoding.UTF8.GetBytes(sifrovanaPoruka));
 
                         if (poruka == "kraj")
                             break;
@@ -174,10 +196,24 @@ namespace Client
                             break;
                         }
 
-                        string odgovor = Encoding.UTF8.GetString(buffer, 0, brBajta); 
-                        if (odgovor == "kraj")
+                        string odgovor = Encoding.UTF8.GetString(buffer, 0, brBajta);
+                        string desifrovaniOdgovor = "";
+                        if (algoritam.ToLower() == "des")
+                        {
+                            Crypto.DES des = new Crypto.DES(key, iv);
+                            desifrovaniOdgovor = des.Decrypt(odgovor);
+                        }
+                        else
+                        {
+                            Crypto.AES aes = new Crypto.AES(key, iv);
+                            desifrovaniOdgovor = aes.Decrypt(odgovor);
+                        }
+
+                        Console.WriteLine("Primljeni (sifrovani) odgovor: " + odgovor);
+                        Console.WriteLine("Desifrovani odgovor: " + desifrovaniOdgovor);
+
+                        if (desifrovaniOdgovor == "kraj")
                             break;
-                        Console.WriteLine(odgovor);
                     }
                     catch (SocketException ex)
                     {
