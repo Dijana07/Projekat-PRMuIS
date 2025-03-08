@@ -18,5 +18,13 @@ namespace Server
         {
             return data.GetValueOrDefault(hesirano);
         }
+
+        public void Ispisi()
+        {
+            foreach (var item in data)
+            {
+                Console.WriteLine(item.Key + " " + item.Value);
+            }
+        }
     }
 }
